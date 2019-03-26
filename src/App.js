@@ -1,26 +1,31 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom';
 import './App.css';
 
+//components
+import NavigationMenu from './containers/NavigationMenu';
+import PrivateRoute from './components/Session/PrivateRoute';
+import LoginContainer from './containers/Login';
+import DashboardContainer from './containers/Dashboard';
+import SavingsContainer from './containers/Savings';
+import SettingsContainer from './containers/Settings';
+
 class App extends Component {
+
   render() {
+    const { store } = this.props;
+    
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
+      <Router>
+        <NavigationMenu store={store} />
+        <Switch>
+          <Route exact path="/login" render={(props) => <LoginContainer {...props} session={store.Session} />} />
+          <PrivateRoute exact path="/dashboard" component={DashboardContainer} session={store.Session} />
+          <PrivateRoute exact path="/savings" component={SavingsContainer} session={store.Session} />
+          <PrivateRoute exact path="/settings" component={SettingsContainer} session={store.Session} />
+          <Redirect to='/login' />
+        </Switch>
+      </Router>
     );
   }
 }
